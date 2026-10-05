@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCS Vision | Netzwerk, KI und Energie für Unternehmen</title>
+<meta name="description" content="MCS Vision verbindet Unternehmen mit Investoren und Partnern, automatisiert Abläufe mit KI und bringt Photovoltaik und Batteriespeicher auf Gewerbestandorte. Deutschlandweit, mit Fokus auf B2B.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F7F8; --white:#FFFFFF; --ink:#0A2231; --ink-2:#465C6B; --ink-3:#7C8F9B; --line:#D7E1E6;
+  --net:#2358FF; --ki:#00B39B; --en:#A6DB12;
+  --net-tint:#E8EDFF; --ki-tint:#DDF5F1; --en-tint:#EFF8CF;
+  --ph:#D92D20;
+  --font:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --wrap:min(1240px,100% - 48px);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--paper);color:var(--ink);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+img,svg,canvas{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none;padding:0}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--net);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-weight:500;letter-spacing:-.032em;line-height:1.04;font-stretch:92%}
+h2{font-size:clamp(2rem,4.1vw,3.5rem)}
+h3{font-size:1.6rem;letter-spacing:-.02em}
+.wrap{width:var(--wrap);margin-inline:auto}
+.sec{padding:clamp(84px,11vw,152px) 0}
+.lead{font-size:clamp(1.05rem,1.35vw,1.25rem);color:var(--ink-2);max-width:56ch}
+.ph{color:var(--ph)}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;z-index:300}
+.skip:focus{left:8px}
+[data-k="net"]{--c:var(--net);--tint:var(--net-tint);--on:#fff}
+[data-k="ki"]{--c:var(--ki);--tint:var(--ki-tint);--on:var(--ink)}
+[data-k="en"]{--c:var(--en);--tint:var(--en-tint);--on:var(--ink)}
+
+/* Scroll-Fortschritt */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:linear-gradient(90deg,var(--net),var(--ki),var(--en));transform-origin:0 50%;transform:scaleX(0)}
+
+/* Navigation */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50}
+.nav::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(243,247,248,.88);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line);opacity:0;transition:opacity .35s}
+.nav.scrolled::before{opacity:1}
+.menu-open .nav::before{opacity:0}
+.nav-in{width:var(--wrap);margin:auto;height:78px;display:flex;align-items:center;justify-content:space-between;gap:24px;transition:height .35s}
+.nav.scrolled .nav-in{height:64px}
+.logo{display:flex;align-items:center;gap:6px;font-size:1.28rem;letter-spacing:-.03em;font-stretch:92%}
+.logo b{font-weight:700}
+.logo span{font-weight:400}
+.logo svg{margin-right:4px}
+.nav-links{display:flex;align-items:center;gap:34px;font-size:.98rem}
+.nav-links a{position:relative;padding:6px 0;color:var(--ink)}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--c,var(--ink));transform:scaleX(0);transform-origin:0 50%;transition:transform .35s var(--ease)}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.burger{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--white);cursor:pointer;position:relative}
+.burger i{position:absolute;left:13px;right:13px;height:1.5px;background:var(--ink);transition:transform .3s,top .3s}
+.burger i:first-child{top:18px}.burger i:last-child{top:25px}
+.menu-open .burger i:first-child{top:21.5px;transform:rotate(45deg)}
+.menu-open .burger i:last-child{top:21.5px;transform:rotate(-45deg)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:#fff;padding:8px 8px 8px 24px;border-radius:999px;font-weight:500;font-size:1rem;border:0;cursor:pointer;transition:background .3s}
+.btn .ic{width:38px;height:38px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;transition:background .3s,transform .4s var(--ease)}
+.btn:hover .ic{background:var(--en);transform:translateX(3px)}
+.btn.sm{padding:5px 5px 5px 18px;font-size:.94rem}
+.btn.sm .ic{width:32px;height:32px}
+.btn.ghost{background:transparent;color:var(--ink);padding:8px 4px;border-radius:0;gap:10px;box-shadow:inset 0 -1.5px 0 var(--ink)}
+.btn.ghost:hover{box-shadow:inset 0 -1.5px 0 var(--ki)}
+.btns{display:flex;flex-wrap:wrap;align-items:center;gap:28px;margin-top:38px}
+
+/* Hero */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:130px 0 0;overflow:hidden}
+.hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-in{position:relative;width:var(--wrap);margin:auto}
+.hero h1{font-size:clamp(2.45rem,5.5vw,5rem)}
+.hero h1 .l{display:block;overflow:hidden;padding-bottom:.08em;cursor:default}
+.hero h1 .l>span{display:inline-block;transform:translateY(110%);transition:transform 1s var(--ease),opacity .4s}
+.loaded .hero h1 .l>span{transform:none}
+.hero h1 .l:nth-child(2)>span{transition-delay:.14s,0s}
+.hero h1 .l:nth-child(3)>span{transition-delay:.28s,0s}
+.hero h1 .dot{color:var(--c)}
+.hero h1.focus .l:not(.on)>span{opacity:.28}
+.hero .lead,.hero .btns,.trust{opacity:0;transform:translateY(14px);transition:opacity .9s .55s,transform .9s .55s var(--ease)}
+.loaded .hero .lead,.loaded .hero .btns,.loaded .trust{opacity:1;transform:none}
+.hero .lead{margin-top:30px;max-width:50ch}
+.trust{position:relative;width:var(--wrap);margin:clamp(56px,9vh,110px) auto 0;display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:0;border-top:1px solid var(--line)}
+.trust li{padding:22px 40px 30px 0;margin-right:40px;font-size:.95rem;color:var(--ink-2);line-height:1.35}
+.trust li+li{border-left:1px solid var(--line);padding-left:40px}
+.trust strong{display:block;font-size:1.5rem;font-weight:500;color:var(--ink);letter-spacing:-.02em;font-stretch:92%}
+
+/* Geschäftsfelder */
+.pillars{padding-top:clamp(70px,9vw,120px)}
+.head{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:end;margin-bottom:56px}
+.head p{color:var(--ink-2);max-width:44ch;justify-self:end}
+.pl-row{display:flex;background:var(--white);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.pl{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;padding:38px 36px 34px;min-height:610px;transition:flex-grow .7s var(--ease),background .5s;isolation:isolate}
+.pl+.pl{border-left:1px solid var(--line)}
+.pl::before{content:"";position:absolute;left:0;top:0;height:4px;width:100%;background:var(--c);transform:scaleX(.16);transform-origin:0 50%;transition:transform .7s var(--ease)}
+.pl::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(420px circle at var(--mx,50%) var(--my,30%),var(--tint),transparent 70%);opacity:0;transition:opacity .5s}
+.pl-in{width:min(100%,304px);display:flex;flex-direction:column;flex:1}
+.pl-vis{height:190px;margin:6px 0 30px}
+.pl-vis svg{height:100%;width:auto}
+.pl p{color:var(--ink-2);margin-top:14px}
+.pl ul{margin-top:22px;border-top:1px solid var(--line)}
+.pl li{padding:11px 0;border-bottom:1px solid var(--line);font-size:.96rem;display:flex;gap:12px;align-items:baseline}
+.pl li::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--c);transform:translateY(-1px)}
+.pl-go{margin-top:auto;padding-top:30px;display:flex;align-items:center;justify-content:space-between;font-weight:500}
+.go-ic{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:background .35s,border-color .35s,color .35s,transform .5s var(--ease)}
+@media (hover:hover){
+  .pl:hover{flex-grow:1.26}
+  .pl:hover::before{transform:scaleX(1)}
+  .pl:hover::after{opacity:1}
+  .pl:hover .go-ic{background:var(--c);border-color:var(--c);color:var(--on);transform:rotate(-45deg)}
+}
+.pl:focus-visible{outline-offset:-4px}
+
+/* SVG-Visuals */
+.vis .s{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.vis .sl{fill:none;stroke:var(--line);stroke-width:1.5}
+.vis .c{fill:var(--c)}
+.vis .cs{fill:none;stroke:var(--c);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.vis .w{fill:var(--white)}
+[data-k="en"] .vis .cs{stroke:#86B800}
+.vis .flow{stroke-dasharray:3 8;animation:flow 1.6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-22}}
+.vis .pulse{transform-box:fill-box;transform-origin:center;animation:pulse 3.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.55);opacity:.55}}
+.vis .ring{transform-box:fill-box;transform-origin:center;animation:ring 3.2s ease-out infinite}
+@keyframes ring{0%{transform:scale(.6);opacity:.7}100%{transform:scale(2.4);opacity:0}}
+.vis .bar{transform-box:fill-box;transform-origin:0 50%;animation:bar 5.2s var(--ease) infinite}
+@keyframes bar{0%{transform:scaleX(0)}38%,88%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+.vis .chk{animation:chk 5.2s linear infinite;opacity:0}
+@keyframes chk{0%,36%{opacity:0}42%,88%{opacity:1}100%{opacity:0}}
+.vis .cell{animation:cell 4.8s linear infinite;opacity:.14}
+@keyframes cell{0%,8%{opacity:.14}16%,84%{opacity:1}100%{opacity:.14}}
+.vis .rays{transform-box:fill-box;transform-origin:center;animation:spin 24s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vis .shim{animation:shim 4.8s ease-in-out infinite;opacity:.18}
+@keyframes shim{0%,100%{opacity:.18}50%{opacity:.75}}
+
+/* Dunkler Abschnitt */
+.dark{background:var(--ink);color:#fff}
+.statement{font-size:clamp(2rem,4.6vw,4.1rem);max-width:23ch}
+.statement .wd{opacity:.2;transition:opacity .35s}
+.statement .wd.lit{opacity:1}
+.where{margin-top:clamp(64px,8vw,110px);display:grid;grid-template-columns:.42fr 1fr;gap:40px}
+.where h3{font-size:1.25rem;color:#9FB3C0;font-weight:400;letter-spacing:-.01em;position:sticky;top:110px;align-self:start}
+.rows{border-top:1px solid rgba(255,255,255,.16)}
+.rowl{position:relative;display:grid;grid-template-columns:1fr auto 44px;gap:24px;align-items:center;padding:24px 22px;border-bottom:1px solid rgba(255,255,255,.16);isolation:isolate;transition:color .35s}
+.rowl::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--c);transform:scaleY(0);transform-origin:50% 100%;transition:transform .45s var(--ease)}
+.rowl .q{font-size:clamp(1.15rem,2vw,1.6rem);letter-spacing:-.02em;font-stretch:92%}
+.rowl .a{min-width:104px;display:flex;align-items:center;gap:10px;font-size:.95rem;color:#C6D4DC;transition:color .35s}
+.rowl .a i{width:9px;height:9px;border-radius:50%;background:var(--c);transition:background .35s}
+.rowl .go-ic{border-color:rgba(255,255,255,.25)}
+@media (hover:hover){
+  .rowl:hover{color:var(--on)}
+  .rowl:hover::before{transform:scaleY(1)}
+  .rowl:hover .a{color:var(--on)}
+  .rowl:hover .a i{background:var(--on)}
+  .rowl:hover .go-ic{border-color:var(--on);transform:rotate(-45deg)}
+}
+
+/* Ablauf */
+.steps{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:36px;margin-top:64px;padding-top:40px}
+.steps::before,.steps::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--line)}
+.steps::after{background:linear-gradient(90deg,var(--net),var(--ki),var(--en));transform:scaleX(var(--p,0));transform-origin:0 50%;transition:transform .2s linear}
+.step .n{font-size:.95rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.step h3{margin:14px 0 10px;font-size:1.45rem}
+.step p{color:var(--ink-2);font-size:.98rem;max-width:28ch}
+.step{position:relative;opacity:.35;transition:opacity .5s}
+.step.on{opacity:1}
+.step::before{content:"";position:absolute;top:-46px;left:0;width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--line);transition:border-color .4s,background .4s}
+.step.on::before{border-color:var(--ink);background:var(--ink)}
+.dark .steps::before{background:rgba(255,255,255,.16)}
+.dark .step .n{color:#9FB3C0}.dark .step p{color:#C6D4DC}
+.dark .step::before{background:var(--ink);border-color:rgba(255,255,255,.3)}
+.dark .step.on::before{background:var(--c,#fff);border-color:var(--c,#fff)}
+.dark .steps::after{background:var(--c,#fff)}
+
+/* Über uns */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,7vw,110px);align-items:center}
+.about p+p{margin-top:18px}
+.about .txt p{color:var(--ink-2);max-width:52ch}
+.about h2{margin-bottom:28px}
+.tri{position:relative;aspect-ratio:1/1;max-width:520px;width:100%;justify-self:end}
+.tri svg{width:100%;height:100%}
+.tri .edge{fill:none;stroke-width:2;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.6s var(--ease)}
+.tri.on .edge{stroke-dashoffset:0}
+.tri .edge:nth-of-type(2){transition-delay:.25s}.tri .edge:nth-of-type(3){transition-delay:.5s}
+.tri text{font-family:var(--font);font-size:15px;fill:var(--ink);font-weight:500}
+.tri .mid{font-size:13px;fill:var(--ink-2);font-weight:400}
+.about .txt p.note{color:var(--ph)}
+.note{margin-top:30px;border:1.5px dashed var(--ph);border-radius:12px;padding:14px 18px;font-size:.9rem;color:var(--ph);max-width:52ch}
+
+/* Kontakt */
+.contact{background:var(--white);border-top:1px solid var(--line)}
+.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(40px,7vw,110px)}
+.contact h2{max-width:14ch}
+.contact .lead{margin-top:24px}
+.cdata{margin-top:44px;border-top:1px solid var(--line)}
+.cdata li{display:flex;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid var(--line);font-size:.98rem}
+.cdata span:first-child{color:var(--ink-2)}
+form{display:grid;gap:26px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.fld label,.chips legend{display:block;font-size:.88rem;color:var(--ink-2);margin-bottom:6px}
+.fld input,.fld textarea{width:100%;border:0;border-bottom:1.5px solid var(--line);background:transparent;padding:10px 0;font-size:1.05rem;border-radius:0;transition:border-color .3s}
+.fld input:focus,.fld textarea:focus{outline:0;border-color:var(--ink)}
+.fld textarea{resize:vertical;min-height:96px}
+.chips{border:0;padding:0}
+.chips div{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.chip span{display:flex;align-items:center;gap:9px;padding:9px 18px;border:1.5px solid var(--line);border-radius:999px;font-size:.98rem;transition:background .3s,border-color .3s,color .3s}
+.chip span::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chip input:checked+span{background:var(--c);border-color:var(--c);color:var(--on)}
+.chip input:checked+span::before{background:var(--on)}
+.chip input:focus-visible+span{outline:2px solid var(--net);outline-offset:3px}
+.form-foot{display:flex;flex-wrap:wrap;align-items:center;gap:20px;justify-content:space-between}
+.form-foot small{color:var(--ink-3);max-width:34ch;font-size:.85rem}
+.sent{display:none;padding:16px 20px;border-radius:12px;background:var(--ki-tint);font-size:.98rem}
+form.done .sent{display:block}
+
+/* Footer */
+footer{background:var(--ink);color:#C6D4DC;padding:70px 0 34px;font-size:.95rem}
+.foot{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
+footer .logo{color:#fff}
+footer h4{color:#fff;font-weight:500;font-size:.95rem;margin-bottom:14px}
+footer li{padding:4px 0}
+footer a:hover{color:#fff}
+footer .ph{color:#FF8A80}
+.foot-b{margin-top:56px;padding-top:22px;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;font-size:.85rem;color:#9FB3C0}
+
+/* Unterseiten */
+.sh{background:var(--tint);padding:150px 0 clamp(70px,8vw,110px)}
+.sh-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(36px,6vw,90px);align-items:center}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:.92rem;color:var(--ink-2);margin-bottom:34px}
+.back:hover{color:var(--ink)}
+.sh-name{display:flex;align-items:center;gap:10px;font-weight:500;margin-bottom:18px}
+.sh-name i{width:11px;height:11px;border-radius:50%;background:var(--c)}
+.sh h1{font-size:clamp(2.3rem,5vw,4.5rem)}
+.sh .lead{margin-top:26px;color:var(--ink)}
+.sh-vis{background:var(--white);border-radius:22px;padding:clamp(24px,4vw,48px);aspect-ratio:5/4;display:grid;place-items:center}
+.sh-vis svg{width:100%;height:auto}
+.facts{display:flex;flex-wrap:wrap;gap:16px 44px;margin-top:44px;padding-top:20px;border-top:1px solid rgba(10,34,49,.16)}
+.facts li{font-size:.92rem;color:var(--ink-2)}
+.facts strong{display:block;font-size:1.5rem;font-weight:500;color:var(--ink);letter-spacing:-.02em}
+.sv{display:grid;grid-template-columns:1fr 1fr;margin-top:56px;border-top:1px solid var(--line)}
+.sv article{padding:38px 40px 42px 0;border-bottom:1px solid var(--line)}
+.sv article:nth-child(even){padding-left:40px;padding-right:0;border-left:1px solid var(--line)}
+.sv h3{display:flex;align-items:center;gap:12px}
+.sv h3::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
+.sv p{margin-top:12px;color:var(--ink-2);max-width:46ch}
+.others{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+.oth{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:28px 30px;background:var(--white);border:1px solid var(--line);border-radius:18px;transition:background .4s}
+.oth h3{font-size:1.4rem}
+.oth p{color:var(--ink-2);font-size:.95rem;margin-top:6px}
+@media (hover:hover){.oth:hover{background:var(--tint)}.oth:hover .go-ic{background:var(--c);border-color:var(--c);color:var(--on);transform:rotate(-45deg)}}
+.cta-band{margin-top:clamp(70px,9vw,120px);display:flex;flex-wrap:wrap;gap:30px;align-items:end;justify-content:space-between}
+.cta-band h2{max-width:16ch}
+
+/* Seitenwechsel */
+.curtain{position:fixed;inset:0;z-index:200;background:var(--c,var(--ink));color:var(--on,#fff);display:grid;place-items:center;transform:translateY(101%);pointer-events:none}
+.curtain.in{transform:none;transition:transform .55s cubic-bezier(.7,0,.2,1)}
+.curtain.out{transform:translateY(-101%);transition:transform .55s cubic-bezier(.7,0,.2,1)}
+.curtain b{font-size:clamp(2.6rem,9vw,7.5rem);font-weight:500;letter-spacing:-.04em;font-stretch:92%}
+
+/* Einblenden */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.on{opacity:1;transform:none}
+
+/* Responsive */
+@media (max-width:1000px){
+  .nav-links{position:fixed;inset:0;background:var(--paper);flex-direction:column;justify-content:center;gap:26px;font-size:1.8rem;letter-spacing:-.02em;opacity:0;pointer-events:none;transition:opacity .3s}
+  .menu-open .nav-links{opacity:1;pointer-events:auto}
+  .burger{display:block;z-index:2}
+  .logo{position:relative;z-index:2}
+  .nav-right .btn{display:none}
+  .head{grid-template-columns:1fr;gap:18px;margin-bottom:40px}
+  .head p{justify-self:start}
+  .pl-row{flex-direction:column}
+  .pl{flex:none;min-height:0;padding:30px 26px}
+  .pl+.pl{border-left:0;border-top:1px solid var(--line)}
+  .pl-in{width:100%}
+  .pl-vis{height:150px;margin-bottom:22px}
+  .where{grid-template-columns:1fr;gap:22px}
+  .where h3{position:static}
+  .about,.contact-grid,.sh-grid{grid-template-columns:1fr}
+  .tri{justify-self:start;max-width:420px}
+  .foot{grid-template-columns:1fr 1fr}
+  .sh{padding-top:120px}
+}
+@media (max-width:860px){
+  .hero{padding-top:118px;min-height:0}
+  .hero-canvas{position:relative;inset:auto;height:300px;margin-top:10px;order:2}
+  .trust{order:3;margin-top:0;grid-template-columns:1fr 1fr}
+  .trust li{margin:0;padding:18px 16px 18px 0;border-bottom:1px solid var(--line)}
+  .trust li+li{border-left:0;padding-left:0}
+  .trust li:nth-child(even){padding-left:16px;border-left:1px solid var(--line)}
+  .steps{grid-template-columns:1fr;gap:34px;padding:0 0 0 34px;margin-top:44px}
+  .steps::before,.steps::after{left:6px;right:auto;top:0;bottom:0;width:2px;height:auto}
+  .steps::after{transform:scaleY(var(--p,0));transform-origin:50% 0;background:linear-gradient(180deg,var(--net),var(--ki),var(--en))}
+  .step::before{top:4px;left:-34px}
+  .step p{max-width:none}
+  .sv{grid-template-columns:1fr}
+  .sv article,.sv article:nth-child(even){padding:28px 0;border-left:0}
+  .others{grid-template-columns:1fr}
+  .rowl{grid-template-columns:1fr 44px;padding:20px 8px}
+  .rowl .a{grid-column:1;grid-row:2}
+  .rowl .go-ic{grid-row:1/3;grid-column:2}
+  .f2{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  :root{--wrap:min(1240px,100% - 36px)}
+  .foot{grid-template-columns:1fr}
+  .btns{gap:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01s!important}
+  .rv{opacity:1;transform:none}
+  .statement .wd{opacity:1}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#bereiche">Zum Inhalt springen</a>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="logo" href="#top" aria-label="MCS Vision Startseite">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" fill="none" stroke-width="3.2" stroke-linecap="round"><path d="M5 4c0 11 10 11 10 22" stroke="#2358FF"/><path d="M25 4c0 11-10 11-10 22" stroke="#A6DB12"/><path d="M15 4v22" stroke="#00B39B"/></svg>
+      <b>MCS</b><span>Vision</span>
+    </a>
+    <nav class="nav-links" aria-label="Hauptnavigation">
+      <a href="#/netzwerk" data-k="net">Netzwerk</a>
+      <a href="#/ki" data-k="ki">KI</a>
+      <a href="#/energie" data-k="en">Energie</a>
+      <a href="#ueber">Über uns</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="nav-right">
+      <a class="btn sm" href="#kontakt">Gespräch vereinbaren <span class="ic"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+      <button class="burger" aria-label="Menü öffnen" aria-expanded="false"><i></i><i></i></button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ STARTSEITE ============ -->
+<main id="home">
+  <section class="hero" id="top">
+    <canvas class="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero-in">
+      <h1 id="h1">
+        <span class="l" data-s="0" data-k="net"><span>Kontakte, die Türen öffnen<span class="dot">.</span></span></span>
+        <span class="l" data-s="1" data-k="ki"><span>KI, die Arbeit abnimmt<span class="dot">.</span></span></span>
+        <span class="l" data-s="2" data-k="en"><span>Energie, die sich rechnet<span class="dot">.</span></span></span>
+      </h1>
+      <p class="lead">MCS Vision bringt Unternehmen mit Investoren und Partnern zusammen, automatisiert Abläufe mit künstlicher Intelligenz und macht Gewerbestandorte zu Stromerzeugern. Für Start-ups und Unternehmen, die den nächsten Schritt gehen.</p>
+      <div class="btns">
+        <a class="btn" href="#kontakt">Gespräch vereinbaren <span class="ic"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+        <a class="btn ghost" href="#bereiche">Geschäftsfelder ansehen</a>
+      </div>
+    </div>
+    <ul class="trust">
+      <li><strong><span data-count="20">20</span>+</strong>Vertriebsprofis im Energieteam</li>
+      <li><strong>3</strong>Geschäftsfelder unter einem Dach</li>
+      <li><strong>B2B</strong>Fokus auf Unternehmen</li>
+      <li><strong>Bundesweit</strong>in ganz Deutschland aktiv</li>
+    </ul>
+  </section>
+
+  <section class="sec pillars" id="bereiche">
+    <div class="wrap head">
+      <h2 class="rv">Drei Geschäftsfelder. Wählen Sie Ihren Einstieg.</h2>
+      <p class="rv">Jeder Bereich arbeitet eigenständig und mit eigenem Team. Zusammen decken sie ab, was Wachstum am häufigsten bremst.</p>
+    </div>
+    <div class="wrap">
+      <div class="pl-row rv">
+        <a class="pl" data-k="net" href="#/netzwerk">
+          <div class="pl-in">
+            <div class="pl-vis" data-vis="net"></div>
+            <h3>Netzwerk</h3>
+            <p>Investoren und Partner, die zu Ihrem Vorhaben passen. Persönlich vorgestellt statt kalt angeschrieben.</p>
+            <ul>
+              <li>Zugang zu Investoren und Kapitalgebern</li>
+              <li>Partner für Vertrieb, Technologie und Wachstum</li>
+              <li>Für Start-ups und etablierte Unternehmen</li>
+            </ul>
+            <span class="pl-go">Zum Bereich Netzwerk <span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></span>
+          </div>
+        </a>
+        <a class="pl" data-k="ki" href="#/ki">
+          <div class="pl-in">
+            <div class="pl-vis" data-vis="ki"></div>
+            <h3>Künstliche Intelligenz</h3>
+            <p>KI-Lösungen, die Routine übernehmen, und digitale Auftritte, über die Kunden Sie finden.</p>
+            <ul>
+              <li>Abläufe automatisieren</li>
+              <li>KI-Anwendungen individuell programmieren</li>
+              <li>Websites und Sichtbarkeit</li>
+            </ul>
+            <span class="pl-go">Zum Bereich KI <span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></span>
+          </div>
+        </a>
+        <a class="pl" data-k="en" href="#/energie">
+          <div class="pl-in">
+            <div class="pl-vis" data-vis="en"></div>
+            <h3>Energie</h3>
+            <p>Photovoltaik und Batteriespeicher für Gewerbestandorte. Strom günstig nutzen und Überschüsse verkaufen.</p>
+            <ul>
+              <li>Günstiger Strom vom eigenen Standort</li>
+              <li>Überschüsse an weitere Abnehmer verkaufen</li>
+              <li>Über 20 Vertriebsprofis deutschlandweit</li>
+            </ul>
+            <span class="pl-go">Zum Bereich Energie <span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec dark" id="einstieg">
+    <div class="wrap">
+      <h2 class="statement" id="statement">Wachstum scheitert selten an der Idee. Meistens fehlt der richtige Kontakt, die Zeit oder die Marge.</h2>
+      <div class="where">
+        <h3>Wo stehen Sie gerade?</h3>
+        <div class="rows">
+          <a class="rowl rv" data-k="net" href="#/netzwerk"><span class="q">„Wir gründen und suchen Kapital.“</span><span class="a"><i></i>Netzwerk</span><span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+          <a class="rowl rv" data-k="net" href="#/netzwerk"><span class="q">„Unser Unternehmen läuft. Für den nächsten Schritt fehlen Partner.“</span><span class="a"><i></i>Netzwerk</span><span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+          <a class="rowl rv" data-k="ki" href="#/ki"><span class="q">„Unser Team verliert zu viel Zeit mit Routine.“</span><span class="a"><i></i>KI</span><span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+          <a class="rowl rv" data-k="ki" href="#/ki"><span class="q">„Online findet man uns kaum.“</span><span class="a"><i></i>KI</span><span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+          <a class="rowl rv" data-k="en" href="#/energie"><span class="q">„Wir haben Dachflächen, die nichts einbringen.“</span><span class="a"><i></i>Energie</span><span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+          <a class="rowl rv" data-k="en" href="#/energie"><span class="q">„Unsere Stromkosten drücken auf das Ergebnis.“</span><span class="a"><i></i>Energie</span><span class="go-ic"><svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="ablauf">
+    <div class="wrap">
+      <h2 class="rv">So beginnt die Zusammenarbeit.</h2>
+      <div class="steps" data-steps>
+        <div class="step"><span class="n">01</span><h3>Gespräch</h3><p>Sie schildern Ihr Vorhaben. Wir hören zu und fragen nach, bis wir es verstanden haben.</p></div>
+        <div class="step"><span class="n">02</span><h3>Einordnung</h3><p>Wir sagen offen, welcher Bereich Ihnen weiterhilft und welcher nicht.</p></div>
+        <div class="step"><span class="n">03</span><h3>Konzept</h3><p>Sie erhalten einen konkreten Vorschlag: Schritte, Aufwand und erwarteter Nutzen.</p></div>
+        <div class="step"><span class="n">04</span><h3>Umsetzung</h3><p>Das zuständige Team setzt um. Sie behalten einen festen Ansprechpartner.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="ueber" style="padding-top:0">
+    <div class="wrap about">
+      <div class="txt">
+        <h2 class="rv">Ein Unternehmen. Drei Wege, Ihres voranzubringen.</h2>
+        <p class="rv">MCS Vision bündelt drei Geschäftsfelder, die sich gegenseitig stärken: ein Netzwerk aus Investoren und Partnern, ein Team für KI und digitale Sichtbarkeit und einen Energievertrieb mit über 20 Köpfen in ganz Deutschland.</p>
+        <p class="rv">Für Sie heißt das: ein Gespräch, ein klares Bild und der Bereich, der Ihrem Unternehmen jetzt am meisten bringt.</p>
+        <p class="note rv">Demo-Platzhalter: Hier stehen später Foto und Kurzprofil der Geschäftsführung, Standort und Hintergrund des Unternehmens.</p>
+      </div>
+      <div class="tri" id="tri" aria-hidden="true">
+        <svg viewBox="0 0 520 520" fill="none">
+          <path class="edge" pathLength="1" d="M260 92 L96 392" stroke="#2358FF"/>
+          <path class="edge" pathLength="1" d="M96 392 L424 392" stroke="#00B39B"/>
+          <path class="edge" pathLength="1" d="M424 392 L260 92" stroke="#A6DB12"/>
+          <circle cx="260" cy="292" r="44" fill="#0A2231"/>
+          <text x="260" y="289" text-anchor="middle" style="fill:#fff;font-size:14px">MCS</text>
+          <text x="260" y="306" text-anchor="middle" style="fill:#fff;font-size:14px;font-weight:400">Vision</text>
+          <path d="M260 248V92M222 314L96 392M298 314L424 392" stroke="#D7E1E6" stroke-width="1.5" stroke-dasharray="3 7"/>
+          <circle cx="260" cy="92" r="30" fill="#fff" stroke="#2358FF" stroke-width="2"/><circle cx="260" cy="92" r="9" fill="#2358FF"/>
+          <circle cx="96" cy="392" r="30" fill="#fff" stroke="#00B39B" stroke-width="2"/><circle cx="96" cy="392" r="9" fill="#00B39B"/>
+          <circle cx="424" cy="392" r="30" fill="#fff" stroke="#A6DB12" stroke-width="2"/><circle cx="424" cy="392" r="9" fill="#A6DB12"/>
+          <text x="260" y="42" text-anchor="middle">Netzwerk</text>
+          <text x="96" y="452" text-anchor="middle">KI</text>
+          <text x="424" y="452" text-anchor="middle">Energie</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec contact" id="kontakt">
+    <div class="wrap contact-grid">
+      <div>
+        <h2 class="rv">Sagen Sie uns, wo Sie stehen.</h2>
+        <p class="lead rv">Wir melden uns mit einer ehrlichen Einschätzung, was MCS Vision für Ihr Unternehmen tun kann. Unverbindlich und ohne Verkaufsdruck.</p>
+        <ul class="cdata rv">
+          <li><span>Telefon</span><span class="ph">[Telefonnummer einsetzen]</span></li>
+          <li><span>E-Mail</span><span class="ph">[E-Mail-Adresse einsetzen]</span></li>
+          <li><span>Sitz</span><span class="ph">[Anschrift einsetzen]</span></li>
+        </ul>
+      </div>
+      <form id="form" class="rv" novalidate>
+        <div class="f2">
+          <div class="fld"><label for="f-name">Ihr Name</label><input id="f-name" name="name" autocomplete="name" required></div>
+          <div class="fld"><label for="f-firma">Unternehmen</label><input id="f-firma" name="firma" autocomplete="organization"></div>
+        </div>
+        <div class="f2">
+          <div class="fld"><label for="f-mail">E-Mail</label><input id="f-mail" name="mail" type="email" autocomplete="email" required></div>
+          <div class="fld"><label for="f-tel">Telefon</label><input id="f-tel" name="tel" type="tel" autocomplete="tel"></div>
+        </div>
+        <fieldset class="chips">
+          <legend>Worum geht es?</legend>
+          <div>
+            <label class="chip" data-k="net"><input type="checkbox" name="int" value="Netzwerk"><span>Netzwerk</span></label>
+            <label class="chip" data-k="ki"><input type="checkbox" name="int" value="KI"><span>KI</span></label>
+            <label class="chip" data-k="en"><input type="checkbox" name="int" value="Energie"><span>Energie</span></label>
+          </div>
+        </fieldset>
+        <div class="fld"><label for="f-msg">Ihr Vorhaben in zwei, drei Sätzen</label><textarea id="f-msg" name="msg"></textarea></div>
+        <div class="form-foot">
+          <button class="btn" type="submit">Gespräch vereinbaren <span class="ic"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></button>
+          <small>Ihre Angaben nutzen wir nur, um Ihre Anfrage zu beantworten.</small>
+        </div>
+        <p class="sent" role="status">Danke. In der fertigen Website geht Ihre Anfrage jetzt an MCS Vision. In dieser Demo wird nichts versendet.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- ============ UNTERSEITEN (werden per Skript befüllt) ============ -->
+<main id="sub" hidden></main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="#top"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" fill="none" stroke-width="3.2" stroke-linecap="round"><path d="M5 4c0 11 10 11 10 22" stroke="#2358FF"/><path d="M25 4c0 11-10 11-10 22" stroke="#A6DB12"/><path d="M15 4v22" stroke="#00B39B"/></svg><b>MCS</b><span>Vision</span></a>
+        <p style="margin-top:16px;max-width:30ch">Netzwerk, künstliche Intelligenz und Energie für Unternehmen in ganz Deutschland.</p>
+      </div>
+      <div><h4>Geschäftsfelder</h4><ul><li><a href="#/netzwerk">Netzwerk</a></li><li><a href="#/ki">Künstliche Intelligenz</a></li><li><a href="#/energie">Energie</a></li></ul></div>
+      <div><h4>Unternehmen</h4><ul><li><a href="#ueber">Über uns</a></li><li><a href="#ablauf">Ablauf</a></li><li><a href="#kontakt">Kontakt</a></li></ul></div>
+      <div><h4>Rechtliches</h4><ul><li class="ph">[Impressum]</li><li class="ph">[Datenschutz]</li></ul></div>
+    </div>
+    <div class="foot-b"><span>© 2026 MCS Vision <span class="ph">[Rechtsform einsetzen]</span></span><span>Demo-Entwurf, nicht die offizielle Website</span></div>
+  </div>
+</footer>
+
+<div class="curtain" id="curtain" aria-hidden="true"><b></b></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var ARROW='<svg width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg>';
+
+/* ---------- Visuals der drei Bereiche ---------- */
+var VIS={
+net:(function(){
+  var P=[[40,36],[30,122],[108,160],[212,154],[268,86],[224,28],[126,22]],c=[150,92],s='';
+  s+='<path class="sl" d="M40 36L126 22L224 28L268 86L212 154L108 160L30 122Z"/>';
+  P.forEach(function(p){s+='<path class="cs flow" d="M'+c[0]+' '+c[1]+'L'+p[0]+' '+p[1]+'"/>';});
+  P.forEach(function(p,i){s+='<circle class="c ring" cx="'+p[0]+'" cy="'+p[1]+'" r="7" style="animation-delay:'+(i*.45)+'s" opacity=".0"/><circle class="w" cx="'+p[0]+'" cy="'+p[1]+'" r="7"/><circle class="s" cx="'+p[0]+'" cy="'+p[1]+'" r="7"/>';});
+  s+='<circle class="c ring" cx="150" cy="92" r="16"/><circle class="c" cx="150" cy="92" r="16"/><circle class="w" cx="150" cy="92" r="5"/>';
+  return '<svg class="vis" viewBox="0 0 300 184" role="img" aria-label="Netzwerk aus verbundenen Kontakten">'+s+'</svg>';
+})(),
+ki:(function(){
+  var s='';
+  [34,92,150].forEach(function(y,i){
+    var d='animation-delay:'+(i*.55)+'s';
+    s+='<rect class="w" x="8" y="'+(y-18)+'" width="30" height="36" rx="6"/><rect class="s" x="8" y="'+(y-18)+'" width="30" height="36" rx="6"/><path class="s" d="M16 '+(y-7)+'h14M16 '+y+'h14M16 '+(y+7)+'h8"/>';
+    s+='<rect x="58" y="'+(y-3)+'" width="170" height="6" rx="3" fill="#D7E1E6"/><rect class="c bar" x="58" y="'+(y-3)+'" width="170" height="6" rx="3" style="'+d+'"/>';
+    s+='<circle class="w" cx="264" cy="'+y+'" r="15"/><circle class="s" cx="264" cy="'+y+'" r="15"/><g class="chk" style="'+d+'"><circle class="c" cx="264" cy="'+y+'" r="15"/><path d="M257 '+y+'l5 5 9-10" fill="none" stroke="#0A2231" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>';
+  });
+  return '<svg class="vis" viewBox="0 0 300 184" role="img" aria-label="Aufgaben, die automatisch erledigt werden">'+s+'</svg>';
+})(),
+en:(function(){
+  var s='<g class="rays"><path class="cs" d="M44 10v10M44 68v10M10 44h10M68 44h10M20 20l7 7M61 61l7 7M68 20l-7 7M27 61l-7 7"/></g><circle class="c" cx="44" cy="44" r="15"/>';
+  // PV-Modul
+  s+='<path class="w" d="M62 150L96 84H206L172 150Z"/>';
+  for(var r=0;r<3;r++)for(var k=0;k<4;k++){var x0=96-r*11.33+k*27.5,y0=84+r*22,x1=x0-11.33,y1=y0+22;s+='<path class="c shim" style="animation-delay:'+((k+r)*.35)+'s" d="M'+x0+' '+y0+'h27.5L'+(x1+27.5)+' '+y1+'h-27.5Z"/>';}
+  s+='<path class="s" d="M62 150L96 84H206L172 150ZM84.67 106h110M73.33 128h110M123.5 84L89.5 150M151 84L117 150M178.5 84L144.5 150"/>';
+  s+='<path class="s" d="M117 150v22M96 172h42"/>';
+  // Leitung und Speicher
+  s+='<path class="cs flow" d="M190 118H236"/>';
+  s+='<rect class="w" x="240" y="62" width="48" height="96" rx="8"/>';
+  [0,1,2,3].forEach(function(i){s+='<rect class="c cell" x="247" y="'+(134-i*21)+'" width="34" height="16" rx="3" style="animation-delay:'+(i*.5)+'s"/>';});
+  s+='<rect class="s" x="240" y="62" width="48" height="96" rx="8"/><path class="s" d="M255 56h18"/>';
+  s+='<path class="cs flow" d="M264 158v18H160"/><path class="cs" d="M166 170l-6 6 6 6"/>';
+  return '<svg class="vis" viewBox="0 0 300 184" role="img" aria-label="Photovoltaik mit Batteriespeicher und Stromabgabe">'+s+'</svg>';
+})()
+};
+$$('[data-vis]').forEach(function(el){el.innerHTML=VIS[el.dataset.vis];});
+
+/* ---------- Inhalte der Unterseiten ---------- */
+var DATA={
+net:{name:'Netzwerk',route:'#/netzwerk',short:'Investoren und Partner',
+  h1:'Die richtigen Türen. Zum richtigen Zeitpunkt.',
+  lead:'Kapital und Partner findet man selten über Kaltakquise. Wir stellen Sie persönlich den Menschen vor, die Ihr Vorhaben tragen können: Investoren und Unternehmen, die zu Ihrer Phase und Ihrer Branche passen.',
+  facts:[['Start-ups','von der Idee bis zur Wachstumsphase'],['Unternehmen','die den nächsten Schritt gehen']],
+  h2:'Was unser Netzwerk für Sie leistet.',
+  services:[
+    ['Zugang zu Investoren','Wir öffnen den Kontakt zu Kapitalgebern, die zu Phase, Branche und Volumen Ihres Vorhabens passen.'],
+    ['Strategische Partner','Vertrieb, Technologie, Marktzugang: Wir verbinden Sie mit Unternehmen, die Ihnen für den nächsten Schritt fehlen.'],
+    ['Für Start-ups','Sie haben Idee, Team und erste Ergebnisse. Wir sorgen dafür, dass daraus Gespräche mit den richtigen Investoren werden.'],
+    ['Für etablierte Unternehmen','Ihr Geschäft läuft. Für Expansion oder neue Märkte braucht es Kapital oder Partner mit Reichweite.']],
+  stepsTitle:'Vom ersten Gespräch zur Vorstellung.',
+  steps:[['Kennenlernen','Sie stellen uns Ihr Unternehmen und Ihr Ziel vor.'],['Bedarf schärfen','Kapital, Partner oder beides? Wir klären, was Sie wirklich weiterbringt.'],['Kontakte auswählen','Wir wählen aus unserem Netzwerk die Kontakte, die fachlich und menschlich passen.'],['Persönlich vorstellen','Wir stellen Sie vor. Sie führen das Gespräch auf Augenhöhe.']]},
+ki:{name:'Künstliche Intelligenz',route:'#/ki',short:'Automatisierung, Websites, Sichtbarkeit',
+  h1:'KI, die im Alltag Arbeit abnimmt.',
+  lead:'Wir entwickeln KI-Lösungen, die Routine übernehmen und Abläufe beschleunigen. Dazu bauen wir Websites und sorgen dafür, dass Ihr Unternehmen online gefunden wird. Programmiert für Ihre Prozesse, nicht von der Stange.',
+  facts:[['Automatisierung','für wiederkehrende Abläufe'],['Sichtbarkeit','Websites und Auffindbarkeit']],
+  h2:'Womit wir Ihr Team entlasten.',
+  services:[
+    ['Prozessautomatisierung','Angebote, Rückfragen, Datenpflege: Wiederkehrende Aufgaben laufen automatisch. Ihr Team gewinnt Zeit für Kunden.'],
+    ['Individuelle KI-Programmierung','Assistenten, Agenten und Schnittstellen, die sich in Ihre bestehenden Systeme einfügen.'],
+    ['Sichtbarkeit','Damit Kunden Sie finden: in Suchmaschinen und zunehmend in den Antworten von KI-Assistenten.'],
+    ['Websites','Schnelle, klare Websites, die Anfragen bringen und sich mit Ihren Abläufen verbinden lassen.']],
+  stepsTitle:'Von der Idee zum laufenden System.',
+  steps:[['Abläufe verstehen','Wir sehen uns an, wo Zeit verloren geht und was sich automatisieren lässt.'],['Prototyp bauen','Sie testen früh eine erste Version an echten Fällen aus Ihrem Alltag.'],['Einführen','Wir binden die Lösung in Ihre Systeme ein und schulen Ihr Team.'],['Weiterentwickeln','Wir messen, was die Lösung bringt, und bauen sie Schritt für Schritt aus.']]},
+en:{name:'Energie',route:'#/energie',short:'Photovoltaik und Speicher für Gewerbe',
+  h1:'Aus Fläche wird Strom. Aus Strom wird Ertrag.',
+  lead:'Wir bringen Photovoltaik und Batteriespeicher auf Gewerbestandorte. Der Strom wird vor Ort günstig genutzt, Überschüsse gehen an weitere Abnehmer. Mit über 20 Vertriebsprofis sind wir in ganz Deutschland für Unternehmen unterwegs.',
+  facts:[['20+','Vertriebsprofis im Team'],['B2B','Fokus auf Gewerbestandorte'],['Bundesweit','in ganz Deutschland']],
+  h2:'Was aus Ihrem Standort werden kann.',
+  services:[
+    ['Photovoltaik am Standort','Dächer und Flächen von Gewerbe- und Industriestandorten werden zur eigenen Stromquelle.'],
+    ['Batteriespeicher','Speicher machen Solarstrom dann verfügbar, wenn er gebraucht wird, und nicht nur, wenn die Sonne scheint.'],
+    ['Günstiger Eigenstrom','Strom vom eigenen Standort macht Sie unabhängiger von schwankenden Marktpreisen.'],
+    ['Stromverkauf an Dritte','Was Sie nicht selbst verbrauchen, wird an weitere Nutzer verkauft und bringt zusätzlichen Erlös.']],
+  stepsTitle:'Vom Standort zum Stromerzeuger.',
+  steps:[['Standort nennen','Sie nennen uns Adresse, Fläche und Ihren ungefähren Stromverbrauch.'],['Potenzial prüfen','Wir prüfen, was technisch möglich ist und was sich wirtschaftlich lohnt.'],['Konzept erhalten','Sie erhalten ein Konzept für Photovoltaik und Speicher mit nachvollziehbaren Zahlen.'],['Umsetzen und vermarkten','Die Anlage geht in Betrieb. Eigenverbrauch und Stromverkauf laufen an.']]}
+};
+var ORDER=['net','ki','en'];
+function renderSub(k){
+  var d=DATA[k],sub=$('#sub');sub.dataset.k=k;
+  var btn='<a class="btn" href="#kontakt" data-int="'+k+'">Gespräch vereinbaren <span class="ic"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span></a>';
+  sub.innerHTML=
+  '<section class="sh"><div class="wrap sh-grid"><div>'+
+    '<a class="back" href="#bereiche"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7H2M6 3L2 7l4 4"/></svg>Alle Geschäftsfelder</a>'+
+    '<p class="sh-name"><i></i>MCS Vision '+d.name+'</p><h1>'+d.h1+'</h1><p class="lead">'+d.lead+'</p>'+
+    '<div class="btns">'+btn+'</div>'+
+    '<ul class="facts">'+d.facts.map(function(f){return '<li><strong>'+f[0]+'</strong>'+f[1]+'</li>';}).join('')+'</ul>'+
+  '</div><div class="sh-vis">'+VIS[k]+'</div></div></section>'+
+  '<section class="sec"><div class="wrap"><h2 class="rv">'+d.h2+'</h2><div class="sv">'+
+    d.services.map(function(s){return '<article class="rv"><h3>'+s[0]+'</h3><p>'+s[1]+'</p></article>';}).join('')+
+  '</div></div></section>'+
+  '<section class="sec dark"><div class="wrap"><h2 class="rv">'+d.stepsTitle+'</h2><div class="steps" data-steps>'+
+    d.steps.map(function(s,i){return '<div class="step"><span class="n">0'+(i+1)+'</span><h3>'+s[0]+'</h3><p>'+s[1]+'</p></div>';}).join('')+
+  '</div></div></section>'+
+  '<section class="sec"><div class="wrap"><h2 class="rv">Die anderen Geschäftsfelder.</h2><div class="others">'+
+    ORDER.filter(function(o){return o!==k;}).map(function(o){return '<a class="oth rv" data-k="'+o+'" href="'+DATA[o].route+'"><div><h3>'+DATA[o].name+'</h3><p>'+DATA[o].short+'</p></div><span class="go-ic">'+ARROW+'</span></a>';}).join('')+
+  '</div><div class="cta-band"><h2 class="rv">Lassen Sie uns über Ihr Vorhaben sprechen.</h2>'+btn+'</div></div></section>';
+  document.title='MCS Vision '+d.name+' | '+d.short;
+  observe(sub);
+}
+
+/* ---------- Routing mit Seitenwechsel ---------- */
+var ROUTES={'#/netzwerk':'net','#/ki':'ki','#/energie':'en'};
+var home=$('#home'),sub=$('#sub'),curtain=$('#curtain'),current='home',busy=false;
+function setActive(k){$$('.nav-links a').forEach(function(a){a.classList.toggle('active',!!k&&a.dataset.k===k);});}
+function show(k){
+  if(k){renderSub(k);home.hidden=true;sub.hidden=false;current=k;}
+  else{sub.hidden=true;home.hidden=false;current='home';if(window.__resizeHero)window.__resizeHero();document.title='MCS Vision | Netzwerk, KI und Energie für Unternehmen';}
+  setActive(k);
+}
+function scrollToId(id,smooth){
+  var el=id&&id.length>1?document.getElementById(id.slice(1)):null;
+  if(!el||id==='#top'){window.scrollTo({top:0,behavior:smooth&&!reduce?'smooth':'auto'});return;}
+  var y=el.getBoundingClientRect().top+window.pageYOffset-(el.id==='kontakt'||el.id==='einstieg'?0:20);
+  window.scrollTo({top:y,behavior:smooth&&!reduce?'smooth':'auto'});
+}
+function go(hash,instant){
+  var k=ROUTES[hash]||null, target=k?'':hash;
+  var samePage=(k||'home')===current;
+  if(samePage){ if(k)window.scrollTo({top:0,behavior:reduce?'auto':'smooth'}); else scrollToId(target,true); return; }
+  if(instant||reduce){show(k);if(k)window.scrollTo(0,0);else scrollToId(target,false);return;}
+  if(busy)return;busy=true;
+  curtain.dataset.k=k||'';
+  curtain.firstElementChild.textContent=k?DATA[k].name:'MCS Vision';
+  curtain.className='curtain in';
+  setTimeout(function(){
+    show(k); if(k)window.scrollTo(0,0); else scrollToId(target,false);
+    onScroll();
+    curtain.className='curtain out';
+    setTimeout(function(){curtain.className='curtain';busy=false;},580);
+  },620);
+}
+document.addEventListener('click',function(e){
+  var a=e.target.closest?e.target.closest('a[href^="#"]'):null;if(!a)return;
+  e.preventDefault();
+  document.body.classList.remove('menu-open');$('.burger').setAttribute('aria-expanded','false');
+  var h=a.getAttribute('href');
+  if(a.dataset.int){$$('.chip input').forEach(function(c){c.checked=c.parentNode.dataset.k===a.dataset.int;});}
+  go(h,false);
+  try{history.pushState(null,'',h);}catch(_){}
+});
+window.addEventListener('popstate',function(){go(location.hash||'#top',true);});
+
+/* ---------- Navigation, Fortschritt, Menü ---------- */
+var nav=$('#nav'),prog=$('.progress');
+$('.burger').addEventListener('click',function(){var o=document.body.classList.toggle('menu-open');this.setAttribute('aria-expanded',o);});
+function clamp(v){return Math.max(0,Math.min(1,v));}
+function onScroll(){
+  var y=window.pageYOffset,max=document.documentElement.scrollHeight-window.innerHeight;
+  nav.classList.toggle('scrolled',y>20);
+  prog.style.transform='scaleX('+(max>0?clamp(y/max):0)+')';
+  var vh=window.innerHeight;
+  // Wort-für-Wort-Aufhellung
+  var st=$('#statement');
+  if(st&&!home.hidden&&!reduce){var r=st.getBoundingClientRect(),p=clamp((vh*.86-r.top)/(r.height+vh*.28)),w=st._w;for(var i=0;i<w.length;i++)w[i].classList.toggle('lit',i/w.length<p);}
+  // Ablauf-Linie
+  $$('[data-steps]').forEach(function(el){
+    if(el.offsetParent===null)return;
+    var r=el.getBoundingClientRect(),m=window.innerWidth<=860,p=m?clamp((vh*.8-r.top)/(r.height+vh*.1)):clamp((vh*.9-r.top)/(vh*.4));
+    el.style.setProperty('--p',p);var s=el.children;for(var i=0;i<s.length;i++)s[i].classList.toggle('on',p>(i/s.length)+.04);
+  });
+}
+(function(){var st=$('#statement'),words=st.textContent.trim().split(/\s+/);st.innerHTML=words.map(function(w){return '<span class="wd">'+w+'</span>';}).join(' ');st._w=$$('.wd',st);})();
+window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',onScroll);
+
+/* ---------- Einblenden, Zähler ---------- */
+var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'}):null;
+function observe(root){$$('.rv,.tri',root).forEach(function(el,i){if(!io){el.classList.add('on');return;}io.observe(el);});}
+observe(document);
+$$('.rows .rowl').forEach(function(r,i){r.style.transitionDelay=(i*60)+'ms';});
+(function(){var el=$('[data-count]');if(!el||reduce)return;var n=+el.dataset.count,t0=null;el.textContent='0';
+  setTimeout(function(){requestAnimationFrame(function step(t){if(!t0)t0=t;var p=clamp((t-t0)/1400);el.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step);});},900);})();
+
+/* ---------- Lichtkegel auf den Bereichs-Feldern ---------- */
+$$('.pl').forEach(function(p){p.addEventListener('mousemove',function(e){var r=p.getBoundingClientRect();p.style.setProperty('--mx',(e.clientX-r.left)+'px');p.style.setProperty('--my',(e.clientY-r.top)+'px');});});
+
+/* ---------- Formular (Demo) ---------- */
+$('#form').addEventListener('submit',function(e){e.preventDefault();this.classList.add('done');});
+
+/* ---------- Hero: drei Stränge laufen zu einem zusammen ---------- */
+(function(){
+  var cv=$('.hero-canvas'),ctx=cv.getContext('2d'),W=0,H=0,dpr=1,t=0,draw=reduce?1:0,focus=-1,visible=true,last=0;
+  var COL=['#2358FF','#00B39B','#A6DB12'],FIB=9,trust=$('.trust');
+  function size(){var r=cv.getBoundingClientRect();dpr=Math.min(window.devicePixelRatio||1,2);W=r.width;H=r.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
+  function sm(x){x=clamp(x);return x*x*(3-2*x);}
+  function geo(){
+    var mobile=window.matchMedia('(max-width:860px)').matches;
+    return {cx:mobile?W*.5:W*.76,S:mobile?Math.min(W*.3,150):Math.min(W*.15,230),top:mobile?0:-10,yM:mobile?H-34:H-trust.offsetHeight};
+  }
+  function px(i,p,f,g){
+    var k=1-sm(p);
+    var wave=Math.sin(p*Math.PI*2*1.35+i*2.094+t*.42+f*.05)*g.S*.62*Math.sin(Math.PI*p)*(1-.35*p);
+    return g.cx+(i-1)*g.S*k+wave+f*5.2*(.1+.9*k);
+  }
+  function frame(now){
+    requestAnimationFrame(frame);
+    if(!visible||home.hidden)return;
+    var dt=Math.min(50,now-last||16);last=now;
+    if(!reduce){t+=dt*.001;if(document.body.classList.contains('loaded'))draw=Math.min(1,draw+dt/2400);}
+    ctx.clearRect(0,0,W,H);
+    var g=geo(),e=1-Math.pow(1-draw,3),N=96,i,f,n,span=g.yM-g.top;
+    ctx.globalCompositeOperation='multiply';ctx.lineCap='round';
+    for(i=0;i<3;i++){
+      var dim=focus>-1&&focus!==i;
+      for(f=-(FIB-1)/2;f<=(FIB-1)/2;f++){
+        ctx.beginPath();
+        for(n=0;n<=N;n++){var p=n/N;if(p>e)break;var x=px(i,p,f,g),y=g.top+p*span;if(n===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+        ctx.strokeStyle=COL[i];ctx.lineWidth=f===0?2.2:1.1;
+        ctx.globalAlpha=(dim?.12:1)*(f===0?.95:.56-Math.abs(f)*.1);
+        ctx.stroke();
+      }
+    }
+    ctx.globalCompositeOperation='source-over';
+    if(!reduce&&draw>=1){
+      for(i=0;i<3;i++){for(n=0;n<2;n++){
+        var pp=(t*.085+n*.5+i*.17)%1,x2=px(i,pp,0,g),y2=g.top+pp*span;
+        ctx.globalAlpha=(focus>-1&&focus!==i?.15:1)*Math.min(1,pp*8)*Math.min(1,(1-pp)*9);
+        ctx.fillStyle=COL[i];ctx.beginPath();ctx.arc(x2,y2,4,0,6.3);ctx.fill();
+        ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x2,y2,1.5,0,6.3);ctx.fill();
+      }}
+    }
+    var a=clamp((e-.93)*14);
+    if(a>0){
+      var pr=reduce?0:(t*.45)%1;
+      ctx.strokeStyle='#0A2231';ctx.lineWidth=1.5;
+      ctx.globalAlpha=a*(1-pr)*.3;ctx.beginPath();ctx.arc(g.cx,g.yM,10+pr*20,0,6.3);ctx.stroke();
+      ctx.globalAlpha=a;ctx.fillStyle='#0A2231';ctx.beginPath();ctx.arc(g.cx,g.yM,10,0,6.3);ctx.fill();
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(g.cx,g.yM,3.2,0,6.3);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  size();window.addEventListener('resize',size);
+  if('IntersectionObserver' in window)new IntersectionObserver(function(es){visible=es[0].isIntersecting;}).observe(cv);
+  var h1=$('#h1');
+  $$('.l',h1).forEach(function(l){
+    l.addEventListener('mouseenter',function(){focus=+l.dataset.s;h1.classList.add('focus');l.classList.add('on');});
+    l.addEventListener('mouseleave',function(){focus=-1;h1.classList.remove('focus');l.classList.remove('on');});
+  });
+  requestAnimationFrame(frame);
+  window.__resizeHero=size;
+})();
+
+/* ---------- Start ---------- */
+requestAnimationFrame(function(){document.body.classList.add('loaded');});
+if(ROUTES[location.hash])go(location.hash,true);
+onScroll();
+})();
+</script>
+</body>
+</html>
